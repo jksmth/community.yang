@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - check version of schema is known before adding to get-schema request

@@ -85,10 +85,12 @@ class SchemaStore(object):
                 break
 
         if schema_id in self._all_schema_identifier_list:
-            content = "<identifier>%s</identifier><version>%s</version>" % (
+            content = "<identifier>%s</identifier>" % (
                 schema_id,
-                version,
             )
+            content += "<version>%s</version>" % (
+                version,
+            ) if version is not None else ""
             xmlns = "urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring"
             xml_request = '<%s xmlns="%s"> %s </%s>' % (
                 "get-schema",
