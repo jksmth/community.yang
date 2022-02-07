@@ -50,14 +50,12 @@ class Translator(object):
         search_path=None,
         doctype="config",
         keep_tmp_files=False,
-        ignore_errors=False,
         debug=None,
     ):
         yang_files = to_list(yang_files) if yang_files else []
         self._yang_files = []
         self._doctype = doctype
         self._keep_tmp_files = keep_tmp_files
-        self._ignore_errors = ignore_errors
         self._debug = debug
         self._handle_yang_file_path(yang_files)
         self._handle_search_path(search_path)
@@ -106,7 +104,6 @@ class Translator(object):
             raise ValueError(missing_required_lib("lxml"))
         base_pyang_path = sys.modules["pyang"].__file__
         self._pyang_exec_path = find_file_in_path("pyang")
-        self._pyang_ignore_errors = (["--ignore-errors"] if self._ignore_errors else [])
         self._pyang_module = load_from_source(self._pyang_exec_path, "pyang")
         sys.modules["pyang"].__file__ = base_pyang_path
 
@@ -180,7 +177,6 @@ class Translator(object):
                 self._search_path,
                 "--lax-quote-checks",
             ]
-            + self._pyang_ignore_errors
             + self._yang_files
             + [yang_metadata_path]
         )
@@ -369,9 +365,7 @@ class Translator(object):
             "-p",
             self._search_path,
             "--lax-quote-checks",
-        ]
-        + self._pyang_ignore_errors
-        + self._yang_files
+        ] + self._yang_files
 
         if self._debug:
             self._debug(
